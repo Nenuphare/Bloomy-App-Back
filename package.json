@@ -17,6 +17,8 @@
   },
   "homepage": "https://github.com/Nenuphare/Bloomy-App-Back#readme",
   "dependencies": {
-    "sequelize": "^6.37.3"
+    "express": "^4.19.2",
+    "sequelize": "^6.37.3",
+    "swagger": "^0.0.1"
   }
 }

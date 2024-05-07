@@ -1,0 +1,22 @@
+{
+  "name": "bloomy_api",
+  "version": "1.0.0",
+  "description": "Bloomy App API",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run dev"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Nenuphare/Bloomy-App-Back.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Nenuphare/Bloomy-App-Back/issues"
+  },
+  "homepage": "https://github.com/Nenuphare/Bloomy-App-Back#readme",
+  "dependencies": {
+    "sequelize": "^6.37.3"
+  }
+}

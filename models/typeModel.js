@@ -15,8 +15,21 @@ const Type = sequelize.define('Type', {
         type: DataTypes.STRING,
         allowNull: false
     }
-},{
+}, {
     tableName: 'types',
     timestamps: true,
     underscored: true
 });
+
+
+// Synchronisation du modèle avec la base de données
+(async () => {
+    try {
+        await Type.sync({ force: false });
+        console.log("Modèle Type synchronisé avec la base de données.");
+    } catch (error) {
+        console.error("Erreur lors de la synchronisation du modèle Type:", error);
+    }
+})();
+
+module.exports = Type;

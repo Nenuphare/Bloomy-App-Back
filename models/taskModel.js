@@ -1,4 +1,4 @@
-const { Sequelize, DataTypes } = require('sequelize');
+const { Sequelize, Datatypes } = require('sequelize');
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
     host: "db",
@@ -6,41 +6,41 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 });
 
 const Task = sequelize.define('Task', {
-    id_task: {
-        type: DataTypes.INTEGER,
+    id_type: {
+        type: Datatypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
     setDate: {
-        type: DataTypes.DATE,
+        type: Datatypes.DATE,
         allowNull: false
     },
     title: {
-        type: DataTypes.STRING,
+        type: Datatypes.STRING,
         allowNull: false
     },
     deadline: {
-        type: DataTypes.DATE,
+        type: Datatypes.DATE,
         allowNull: true
     },
-    finished : {
-        type: DataTypes.BOOLEAN,
+    finished: {
+        type: Datatypes.BOOLEAN,
         defaultValue: false,
     },
-    id_type:{
-        type: DataTypes.INTEGER,
+    id_type: {
+        type: Datatypes.INTEGER,
         allowNull: false
     },
-    id_room:{
-        type: DataTypes.INTEGER,
+    id_room: {
+        type: Datatypes.INTEGER,
         allowNull: false
     },
-    id_user:{
-        type: DataTypes.INTEGER,
+    id_user: {
+        type: Datatypes.INTEGER,
         allowNull: false
     },
     recurence: {
-        type: DataTypes.INTEGER,
+        type: Datatypes.INTEGER,
         defaultValue: 0
     }
 }, {
@@ -48,3 +48,26 @@ const Task = sequelize.define('Task', {
     timestamps: true,
     underscored: true
 });
+
+
+// Définition des relations
+const Type = require('./typeModel.js');
+Task.belongsTo(Type, { foreignKey: 'id_type' });
+const User = require('./userModel.js');
+Task.belongsTo(User, { foreignKey: 'id_user' });
+const Room = require('./roomModel.js');
+Task.belongsTo(Room, { foreignKey: 'id_room' });
+
+
+
+// Synchronisation du modèle avec la base de données
+(async () => {
+    try {
+        await type.sync({ force: false });
+        console.log("Modèle type synchronisé avec la base de données.");
+    } catch (error) {
+        console.error("Erreur lors de la synchronisation du modèle type:", error);
+    }
+})();
+
+module.exports = Task;

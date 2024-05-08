@@ -24,3 +24,23 @@ const Room = sequelize.define('Room', {
     timestamps: true,
     underscored: true
 });
+
+
+
+// Définition des relations
+const Home = require('./homeModel.js');
+Room.belongsTo(Home, { foreignKey: 'id_home' });
+
+
+
+// Synchronisation du modèle avec la base de données
+(async () => {
+    try {
+        await Room.sync({ force: false });
+        console.log("Modèle Room synchronisé avec la base de données.");
+    } catch (error) {
+        console.error("Erreur lors de la synchronisation du modèle Room:", error);
+    }
+})();
+
+module.exports = Room;

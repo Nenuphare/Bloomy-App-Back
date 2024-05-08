@@ -20,3 +20,16 @@ const Home = sequelize.define('Home', {
     timestamps: true,
     underscored: true
 });
+
+
+// Synchronisation du modèle avec la base de données
+(async () => {
+    try {
+        await Home.sync({ force: false });
+        console.log("Modèle Home synchronisé avec la base de données.");
+    } catch (error) {
+        console.error("Erreur lors de la synchronisation du modèle Home:", error);
+    }
+})();
+
+module.exports = Home;

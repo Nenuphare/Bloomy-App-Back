@@ -2,8 +2,8 @@ const { Sequelize, DataTypes } = require('sequelize');
 // const bcrypt = require('bcrypt');
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: "db",
-    dialect: "mysql"
+    host: "127.0.0.1",
+    dialect: "mariadb"
 });
 
 

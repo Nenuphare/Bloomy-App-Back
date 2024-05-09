@@ -18,9 +18,8 @@
   "homepage": "https://github.com/Nenuphare/Bloomy-App-Back#readme",
   "dependencies": {
     "express": "^4.19.2",
+    "mariadb": "^3.3.0",
     "jsonwebtoken": "^9.0.2",
-    "mysql2": "^3.9.7",
-    "sequelize": "^6.37.3",
-    "swagger": "^0.0.1"
+    "sequelize": "^6.37.3"
   }
 }

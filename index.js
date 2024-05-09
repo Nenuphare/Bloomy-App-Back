@@ -1,17 +1,21 @@
 const express = require('express');
-const sequelize = require("sequelize");
+const Sequelize = require("sequelize");
 const app = express();
 const port = 3003;
 
-const db = new sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: "db",
-    dialect: "mysql"
+const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+  dialect: 'mariadb',
+  host: '127.0.0.1',
+  database: 'bloomy_app',
+  port: 3306,
+  showWarnings: true,
+  connectTimeout: 1000,
   });
 
 // Test de la connexion à la base de données
 db.authenticate()
 .then(() => {
-  console.log("Connecté à la base de données MySQL!");
+  console.log("Connecté à la base de données MariaDB !");
 })
 .catch(err => {
   console.error("Impossible de se connecter à la base de données:", err);

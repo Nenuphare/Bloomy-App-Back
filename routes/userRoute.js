@@ -14,8 +14,8 @@ router
 router
     .route('/')
     .all(jwtMiddleware.verifyToken)
-    // .delete(userController.deleteAUser)
-    // .put(userController.putAUser)
+    .delete(userController.deleteAUser)
+    .put(userController.putAUser)
     .get(userController.getAUser)
 
     

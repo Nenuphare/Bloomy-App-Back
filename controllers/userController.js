@@ -53,22 +53,18 @@ exports.loginAUser = async (req, res) => {
         const user = await User.findOne({ where: { email: req.body.email } });
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const validPassword = await bcrypt.compare(req.body.password, user.password);
-
-        if (validPassword) {
-            const userData = {
-                id_user: user.id_user,
-                email: user.email,
-            };
-          
-            const token = jwt.sign(userData, process.env.JWT_KEY, { expiresIn: "30d" });
-
-            res.status(201).json({ token });
-
-        } else {
-            res.status(401).json({ message: 'Incorrect email or password.' });
-        }
-
+        await bcrypt.compare(req.body.password, user.password, (err, result) =>{
+            if(result){
+                const userData = {
+                    id_user: user.id_user,
+                    email: user.email,
+                };
+                const token = jwt.sign(userData, "blabla", { expiresIn: "30d" });
+                res.status(201).json({ token });
+            }else {
+                res.status(401).json({ message: 'Incorrect email or password.', err });
+            }
+        });
     } catch (error) {
         res.status(500).json({ message: 'Error processing data.' });
     }
@@ -82,7 +78,7 @@ exports.loginAUser = async (req, res) => {
 
 exports.putAUser = async (req, res) => {
     try {
-        let user = await User.findByPk(req.user.id_user);
+        let user = await User.findByPk(req.body.id_user);
 
         // Check if user exist
         if(!user) return res.status(404).json({ message: 'Utilisateur non trouvé.' });
@@ -111,7 +107,7 @@ exports.putAUser = async (req, res) => {
 exports.deleteAUser = async (req, res) => {
     try {
         const deletedUser = await User.destroy({
-            where: { id_user: req.user.id_user }
+            where: { id_user: req.body.id_user}
         });
         
         // Check if user exist

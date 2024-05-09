@@ -24,6 +24,10 @@ db.authenticate()
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); 
 
+// Configuration des routes
+const userRoute = require('./routes/userRoute'); 
+app.use('/users', userRoute);
+
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`L'application écoute sur le port ${port}`);

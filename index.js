@@ -2,6 +2,7 @@ const express = require('express');
 const Sequelize = require("sequelize");
 const app = express();
 const port = 3003;
+require('dotenv').config();
 
 const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
   dialect: 'mariadb',

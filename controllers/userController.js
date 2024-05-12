@@ -10,8 +10,7 @@ require('dotenv').config();
 
 exports.getAUser = async (req, res) => {
     try {
-        // const user = await User.findByPk(req.user.id_user); user vient du middleware
-        const user = await User.findByPk(req.body.id_user);
+        const user = await User.findByPk(req.user.id_user); // req.user comes from middleware
 
         // Check if user exist
         if (!user) return res.status(404).json({ message: 'User not found' });
@@ -64,7 +63,7 @@ exports.loginAUser = async (req, res) => {
                 email: user.email,
             };
 
-            const token = await jwt.sign(userData, process.env.JWT_KEY, { expiresIn: "30d" });
+            const token = jwt.sign(userData, process.env.JWT_KEY, { expiresIn: "30d" });
             res.status(200).json({ token });
 
         } else {
@@ -107,13 +106,13 @@ exports.putAUser = async (req, res) => {
 
 
 /*
- * Delete a user
+ * Delete connected user
  */
 
 exports.deleteAUser = async (req, res) => {
     try {
         const deletedUser = await User.destroy({
-            where: { id_user: req.body.id_user}
+            where: { id_user: req.user.id_user}
         });
         
         // Check if user exist
@@ -122,6 +121,6 @@ exports.deleteAUser = async (req, res) => {
         res.status(201).json({ message: 'User successfully deleted.' });
 
     } catch (error) {
-        res.status(500).json({message: "Error processing data."});
+        res.status(500).json({ message: 'Error processing data.' });
     }
 };

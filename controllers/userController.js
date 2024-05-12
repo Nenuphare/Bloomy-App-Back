@@ -83,7 +83,9 @@ exports.loginAUser = async (req, res) => {
 
 exports.putAUser = async (req, res) => {
     try {
-        let user = await User.findByPk(req.body.id_user);
+        const user = await User.findOne({
+            where: { id_user: req.user.id_user}
+        });
 
         // Check if user exist
         if(!user) return res.status(404).json({ message: 'Utilisateur non trouvé.' });

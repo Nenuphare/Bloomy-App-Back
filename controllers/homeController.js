@@ -39,3 +39,21 @@ exports.createAHome = async (req, res) => {
         res.status(500).json({ message: 'Error processing data.' });
     }
 };
+
+/*
+ * Get a user
+ */
+
+exports.getAUser = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id_user); // req.user comes from middleware
+
+        // Check if user exist
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        res.status(201).json(user);
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error processing data' });
+    }
+};

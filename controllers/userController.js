@@ -1,7 +1,7 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
-// require('dotenv').config();
+require('dotenv').config();
 
 
 /*
@@ -10,7 +10,8 @@ const bcrypt = require('bcrypt');
 
 exports.getAUser = async (req, res) => {
     try {
-        const user = await User.findByPk(req.user.id_user);
+        // const user = await User.findByPk(req.user.id_user); user vient du middleware
+        const user = await User.findByPk(req.body.id_user);
 
         // Check if user exist
         if (!user) return res.status(404).json({ message: 'User not found' });
@@ -53,18 +54,23 @@ exports.loginAUser = async (req, res) => {
         const user = await User.findOne({ where: { email: req.body.email } });
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        await bcrypt.compare(req.body.password, user.password, (err, result) =>{
-            if(result){
-                const userData = {
-                    id_user: user.id_user,
-                    email: user.email,
-                };
-                const token = jwt.sign(userData, "blabla", { expiresIn: "30d" });
-                res.status(201).json({ token });
-            }else {
-                res.status(401).json({ message: 'Incorrect email or password.', err });
-            }
-        });
+        // Check password
+        const password = await bcrypt.compare(req.body.password, user.password);
+
+        if ( user && password ) {
+
+            const userData = {
+                id_user: user.id_user,
+                email: user.email,
+            };
+
+            const token = await jwt.sign(userData, process.env.JWT_KEY, { expiresIn: "30d" });
+            res.status(200).json({ token });
+
+        } else {
+            res.status(401).json({ message: 'Incorrect email or password.', err });
+        }
+        
     } catch (error) {
         res.status(500).json({ message: 'Error processing data.' });
     }

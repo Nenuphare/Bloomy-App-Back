@@ -29,6 +29,9 @@ app.use(express.json());
 const userRoute = require('./routes/userRoute'); 
 app.use('/users', userRoute);
 
+const homeRoute = require('./routes/homeRoute'); 
+app.use('/homes', homeRoute);
+
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`L'application écoute sur le port ${port}`);

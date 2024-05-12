@@ -6,25 +6,18 @@ const jwtMiddleWare = require('../middlewares/jwtMiddleware');
 
 
 
-
 /*
  * Create a group
  */
 
 exports.createAHome = async (req, res) => {
     try {
+        console.log('req.userrr', req.user);
         const { name } = req.body;
+        const user = await User.findByPk(req.user.id_user); // req.user comes from middleware
 
-        // console.log('token', req.headers['authorization'])
-        // const token = req.headers['authorization'];
-        // const payload = jwtMiddleWare.decode(token);
-        // const user = await User.findByPk(payload.id_user);
-
-        // console.log('payload', payload);
-
-        // // Check if user exist
-        // if (!user) return res.status(404).json({ message: 'User not found' });
-
+        // Check if user exist
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
         // Check if home exist
         const existingHome = await Home.findOne({ where: { name } });
@@ -38,7 +31,7 @@ exports.createAHome = async (req, res) => {
 
         await UserHome.create({
             id_home: home.id_home,
-            id_user: 1,
+            id_user: user.id_user,
         });
 
         res.status(201).json({ message: 'Home added successfully.' });

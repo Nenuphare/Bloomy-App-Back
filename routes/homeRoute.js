@@ -9,7 +9,7 @@ router
     .all(jwtMiddleware.verifyToken)
     // .delete(userController.deleteAHome)
     .post(homeController.createAHome)
-    // .get(userController.getAHome)
+    // .get(homeController.getAHome)
 
     
 module.exports = router;

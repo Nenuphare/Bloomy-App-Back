@@ -1,4 +1,6 @@
 const User = require('../models/userModel');
+const Home = require('../models/homeModel');
+const UserHome = require('../models/userHomeModel');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();
@@ -18,7 +20,7 @@ exports.getAUser = async (req, res) => {
         res.status(201).json(user);
 
     } catch (error) {
-        res.status(500).json({ message: 'Error processing data' });
+        res.status(500).json({ message: 'Error processing data', error: error.message });
     }
 };
 
@@ -38,7 +40,7 @@ exports.registerAUser = async (req, res) => {
         res.status(201).json({ message: `User n°${newUser.id_user} created : mail : ${newUser.email}` });
     }
     catch (error) {
-        res.status(500).json({ message: 'Error processing data' });
+        res.status(500).json({ message: 'Error processing data', error: error.message });
     }
 };
 
@@ -71,7 +73,7 @@ exports.loginAUser = async (req, res) => {
         }
         
     } catch (error) {
-        res.status(500).json({ message: 'Error processing data.' });
+        res.status(500).json({ message: 'Error processing data', error: error.message });
     }
 };
 
@@ -102,7 +104,7 @@ exports.putAUser = async (req, res) => {
         res.status(201).json({ message: 'User updated successfully.' });
 
     } catch (error) {
-        res.status(500).json({ message: 'Error processing data.' });
+        res.status(500).json({ message: 'Error processing data', error: error.message });
     }
 };
 
@@ -123,6 +125,33 @@ exports.deleteAUser = async (req, res) => {
         res.status(201).json({ message: 'User successfully deleted.' });
 
     } catch (error) {
-        res.status(500).json({ message: 'Error processing data.' });
+        res.status(500).json({ message: 'Error processing data', error: error.message });
+    }
+};
+
+
+/*
+ * Get the homes of a user
+ */
+exports.getUserHomes = async (req, res) => {
+    try {
+        const user = await User.findByPk(req.user.id_user);
+
+        // Check if user exists
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Get user homes
+        const userHomes = await UserHome.findAll({
+            where: { id_user: user.id_user },
+            include: [Home] // Include the Home model to get the related homes
+        });
+
+        // Check if homes exist
+        if (!userHomes.length) return res.status(404).json({ message: 'No homes found for this user' });
+
+        res.status(200).json(userHomes);
+        
+    } catch (error) {
+        res.status(500).json({ message: 'Error processing data', error: error.message });
     }
 };

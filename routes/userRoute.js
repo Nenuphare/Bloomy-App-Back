@@ -12,6 +12,12 @@ router
     .post(userController.loginAUser)
 
 router
+    .route('/homes')
+    .all(jwtMiddleware.verifyToken)
+    .get(userController.getUserHomes)
+
+
+router
     .route('/')
     .all(jwtMiddleware.verifyToken)
     .delete(userController.deleteAUser)

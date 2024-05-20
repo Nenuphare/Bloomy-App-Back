@@ -85,12 +85,9 @@ exports.loginAUser = async (req, res) => {
 
 exports.putAUser = async (req, res) => {
     try {
-        const user = await User.findOne({
-            where: { id_user: req.user.id_user}
-        });
-
-        // Check if user exist
-        if(!user) return res.status(404).json({ message: 'Utilisateur non trouvé.' });
+        // Check if the user exist
+        const user = await User.findOne({ where: { id_user: req.user.id_user}});
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
         req.body.password = await bcrypt.hash(req.body.password, 10);
 
@@ -115,14 +112,28 @@ exports.putAUser = async (req, res) => {
 
 exports.deleteAUser = async (req, res) => {
     try {
-        const deletedUser = await User.destroy({
-            where: { id_user: req.user.id_user}
-        });
-        
         // Check if user exist
-        if (!deletedUser) return res.status(404).json({ message: 'User not found' });
+        const user = await User.findByPk(req.user.id_user);
+        if (!user) return res.status(404).json({ message: 'User not found' });
 
-        res.status(201).json({ message: 'User successfully deleted.' });
+        // Get all UserHome relations for the user
+        const userHomes = await UserHome.findAll({ where: { id_user: req.user.id_user } });
+
+        // Delete UserHome relations
+        await UserHome.destroy({ where: { id_user: req.user.id_user } });
+
+        // Check and delete empty homes
+        for (const userHome of userHomes) {
+            // For each home get all user  
+            const allUser = await UserHome.findAll({ where: { id_home: userHome.id_home } });
+            // If no one left delete the home
+            if (allUser.length < 1) await Home.destroy({ where: { id_home: userHome.id_home } });
+        }
+
+        // Delete user
+        await User.destroy({ where: { id_user: req.user.id_user}});
+
+        res.status(201).json({ message: 'User successfully deleted' });
 
     } catch (error) {
         res.status(500).json({ message: 'Error processing data', error: error.message });

@@ -7,14 +7,14 @@ const jwtMiddleware = require('../middlewares/jwtMiddleware');
 router
     .route('/')
     .all(jwtMiddleware.verifyToken)
-    // .delete(userController.deleteAHome)
     .post(homeController.createAHome)
     .get(homeController.getAllHome)
     
-router
+    router
     .route('/:id')
     .all(jwtMiddleware.verifyToken)
     .put(homeController.updateAHome)
+    .delete(homeController.deleteAHome)
 
     
 module.exports = router;

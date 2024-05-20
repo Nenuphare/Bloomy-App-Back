@@ -52,13 +52,44 @@ exports.updateAHome = async(req, res) => {
 
         // Check if home exist
         const home = await Home.findByPk(req.params.id);
-        if (!home) return res.status(404).json({ message: `This home doesn't exist ${req.params.id}` });
+        if (!home) return res.status(404).json({ message: "This home doesn't exist" });
         
         // Update the home
         const { name } = req.body;
         await home.update({ name });
         
-        res.status(201).json({ message: 'Home updated', Home });
+        res.status(201).json({ message: 'Home updated', home });
+
+    } catch(error) {
+        res.status(500).json({ message: 'Error processing data', error: error.message });
+    }
+}
+
+
+/*
+ * Delete a home
+ */
+
+exports.deleteAHome = async(req, res) =>{ 
+    try {
+        // Check if user exist
+        const user = await User.findByPk(req.user.id_user);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Check if home exist
+        const home = await Home.findByPk(req.params.id);
+        if (!home) return res.status(404).json({ message: "This home doesn't exist" });
+
+        // Check if the user is in the home
+        const userHome = await UserHome.findOne({ where: { id_home: req.params.id, id_user: req.user.id_user } });
+        if (!userHome) return res.status(403).json({ message: "You don't have permission to delete this home" });
+
+        // Delete UserHome relation
+        await UserHome.destroy({ where: { id_home: req.params.id } });
+        // Delete the home
+        await Home.destroy({ where: { id_home: req.params.id } });
+        
+        res.status(201).json({message: 'Home deleted'});
 
     } catch(error) {
         res.status(500).json({ message: 'Error processing data', error: error.message });

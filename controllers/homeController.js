@@ -13,33 +13,30 @@ const jwtMiddleWare = require('../middlewares/jwtMiddleware');
  */
 
 exports.createAHome = async (req, res) => {
-    try {
-        const { name } = req.body;
-        const user = await User.findByPk(req.user.id_user); // req.user comes from middleware
-
+    try {        
         // Check if user exist
+        const user = await User.findByPk(req.user.id_user); // req.user comes from middleware
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        // Check if home exist
-        const existingHome = await Home.findOne({ where: { name } });
-        if (existingHome) return res.status(400).json({ message: 'This home already exist.' });
+        const { name } = req.body;
 
         // Generate a unique share code for the home
         const share_code = generateShareCode();
 
-        await Home.create({
+        // Create the new home
+        const newHome = await Home.create({
             name,
             share_code
         });
 
-        const home = await Home.findOne({ where: { name } });
-
+        // Add the relation between user and home
         await UserHome.create({
-            id_home: home.id_home,
+            id_home: newHome.id_home,
             id_user: user.id_user,
         });
 
-        res.status(201).json({ message: 'Home added successfully.' });
+        res.status(201).json({ message: 'Home successfully added' });
+
     } catch (error) {
         res.status(500).json({ message: 'Error processing data', error: error.message });
     }
@@ -129,7 +126,7 @@ exports.joinAHome = async(req, res) =>{
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         // Check if home exist
-        const home = await Home.findOne({where: {share_code: req.params.share_code}});
+        const home = await Home.findOne({ where: { share_code: req.params.share_code } });
         if (!home) return res.status(404).json({ message: 'Home not found' });
 
         // Check if the user is already in the home
@@ -141,7 +138,7 @@ exports.joinAHome = async(req, res) =>{
         });
         if (userHome) return res.status(400).json({ message: 'You are already in this home' });
 
-
+        // Create the relation between user and home
         await UserHome.create({
             id_user: req.user.id_user,
             id_home: home.id_home

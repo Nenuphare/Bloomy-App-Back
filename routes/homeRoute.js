@@ -11,9 +11,10 @@ router
     .get(homeController.getAllHome)
     
 router
-    .route('/:id')
+    .route('/:id_home')
     .all(jwtMiddleware.verifyToken)
     .put(homeController.updateAHome)
+    .post(homeController.exitAHome)
     .delete(homeController.deleteAHome)
 
 router

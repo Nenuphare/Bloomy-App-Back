@@ -54,7 +54,7 @@ exports.updateAHome = async(req, res) => {
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         // Check if home exist
-        const home = await Home.findByPk(req.params.id);
+        const home = await Home.findByPk(req.params.id_home);
         if (!home) return res.status(404).json({ message: "This home doesn't exist" });
         
         // Update the home
@@ -80,17 +80,17 @@ exports.deleteAHome = async(req, res) =>{
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         // Check if home exist
-        const home = await Home.findByPk(req.params.id);
+        const home = await Home.findByPk(req.params.id_home);
         if (!home) return res.status(404).json({ message: "This home doesn't exist" });
 
         // Check if the user is in the home
-        const userHome = await UserHome.findOne({ where: { id_home: req.params.id, id_user: req.user.id_user } });
+        const userHome = await UserHome.findOne({ where: { id_home: req.params.id_home, id_user: req.user.id_user } });
         if (!userHome) return res.status(403).json({ message: "You don't have permission to delete this home" });
 
-        // Delete UserHome relation
-        await UserHome.destroy({ where: { id_home: req.params.id } });
+        // Delete UserHome relations
+        await UserHome.destroy({ where: { id_home: req.params.id_home } });
         // Delete the home
-        await Home.destroy({ where: { id_home: req.params.id } });
+        await Home.destroy({ where: { id_home: req.params.id_home } });
         
         res.status(201).json({message: 'Home deleted'});
 
@@ -144,9 +144,46 @@ exports.joinAHome = async(req, res) =>{
             id_home: home.id_home
         });
 
-        res.status(201).json({ message: `You successfully joined the ${home.name} home` });
+        res.status(201).json({ message: `You successfully joined ${home.name}` });
 
     } catch (error) {
         res.status(500).json({ message: 'Error processing data', error: error.message });
     }
 }
+
+
+/*
+ * Exit a home
+ */
+
+exports.exitAHome = async (req, res) => {
+    try {
+        // Check if user exist
+        const user = await User.findByPk(req.user.id_user);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Check if home exist
+        const home = await Home.findByPk(req.params.id_home);
+        if (!home) return res.status(404).json({ message: "This home doesn't exist" });
+
+        // Check if the connected user is in this home 
+        const userHome = await UserHome.findOne({
+            where: {
+                id_user: req.user.id_user,
+                id_home: req.params.id_home
+            }
+        });
+        if (!userHome) return res.status(404).json({message: 'Your are not in the home' })
+        
+        await userHome.destroy();
+        
+        // Delete the home if there is no one left in
+        const allUser = await UserHome.findAll({ where: { id_home: req.params.id_home } });
+        if (allUser < 1) home.destroy();
+
+        res.status(201).json({ message: `You successfully left ${home.name}` });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Error processing data', error: error.message });
+    }
+};

@@ -17,6 +17,10 @@ const Home = sequelize.define('Home', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    share_code: {
+        type: DataTypes.STRING,
+        allowNull: false
+    }
 }, {
     tableName: 'homes',
     timestamps: true,

@@ -10,11 +10,16 @@ router
     .post(homeController.createAHome)
     .get(homeController.getAllHome)
     
-    router
+router
     .route('/:id')
     .all(jwtMiddleware.verifyToken)
     .put(homeController.updateAHome)
     .delete(homeController.deleteAHome)
+
+router
+    .route('/join/:share_code')
+    .all(jwtMiddleware.verifyToken)
+    .post(homeController.joinAHome)
 
     
 module.exports = router;

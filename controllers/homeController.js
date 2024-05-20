@@ -1,8 +1,10 @@
 const Home = require('../models/homeModel');
 const UserHome = require('../models/userHomeModel');
 const User = require('../models/userModel');
+const generateShareCode = require('../utils/shareCodeGenerator');
 const jwt = require('jsonwebtoken');
 const jwtMiddleWare = require('../middlewares/jwtMiddleware');
+
 
 
 
@@ -22,8 +24,12 @@ exports.createAHome = async (req, res) => {
         const existingHome = await Home.findOne({ where: { name } });
         if (existingHome) return res.status(400).json({ message: 'This home already exist.' });
 
+        // Generate a unique share code for the home
+        const share_code = generateShareCode();
+
         await Home.create({
             name,
+            share_code
         });
 
         const home = await Home.findOne({ where: { name } });
@@ -96,6 +102,7 @@ exports.deleteAHome = async(req, res) =>{
     }
 }
 
+
 /*
  * Get all home
  */
@@ -106,6 +113,43 @@ exports.getAllHome = async(req, res) => {
         res.status(201).json(Homes);
 
     } catch(error) {
+        res.status(500).json({ message: 'Error processing data', error: error.message });
+    }
+}
+
+
+/*
+ * Join a home
+ */
+
+exports.joinAHome = async(req, res) =>{
+    try {
+        // Check if user exist
+        const user = await User.findByPk(req.user.id_user);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Check if home exist
+        const home = await Home.findOne({where: {share_code: req.params.share_code}});
+        if (!home) return res.status(404).json({ message: 'Home not found' });
+
+        // Check if the user is already in the home
+        const userHome = await UserHome.findOne({
+            where: {
+                id_user: req.user.id_user,
+                id_home: home.id_home
+            }
+        });
+        if (userHome) return res.status(400).json({ message: 'You are already in this home' });
+
+
+        await UserHome.create({
+            id_user: req.user.id_user,
+            id_home: home.id_home
+        });
+
+        res.status(201).json({ message: `You successfully joined the ${home.name} home` });
+
+    } catch (error) {
         res.status(500).json({ message: 'Error processing data', error: error.message });
     }
 }

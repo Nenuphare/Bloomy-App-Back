@@ -7,7 +7,7 @@ const jwtMiddleWare = require('../middlewares/jwtMiddleware');
 
 
 /*
- * Create a group
+ * Create a home
  */
 
 exports.createAHome = async (req, res) => {
@@ -38,3 +38,43 @@ exports.createAHome = async (req, res) => {
         res.status(500).json({ message: 'Error processing data', error: error.message });
     }
 };
+
+
+/*
+ * Update a home
+ */
+
+exports.updateAHome = async(req, res) => {
+    try {
+        // Check if user exist
+        const user = await User.findByPk(req.user.id_user);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Check if home exist
+        const home = await Home.findByPk(req.params.id);
+        if (!home) return res.status(404).json({ message: `This home doesn't exist ${req.params.id}` });
+        
+        // Update the home
+        const { name } = req.body;
+        await home.update({ name });
+        
+        res.status(201).json({ message: 'Home updated', Home });
+
+    } catch(error) {
+        res.status(500).json({ message: 'Error processing data', error: error.message });
+    }
+}
+
+/*
+ * Get all home
+ */
+
+exports.getAllHome = async(req, res) => {  
+    try {
+        const Homes = await Home.findAll();
+        res.status(201).json(Homes);
+
+    } catch(error) {
+        res.status(500).json({ message: 'Error processing data', error: error.message });
+    }
+}

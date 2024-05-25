@@ -2,9 +2,6 @@ const Home = require('../models/homeModel');
 const UserHome = require('../models/userHomeModel');
 const User = require('../models/userModel');
 const generateShareCode = require('../utils/shareCodeGenerator');
-const jwt = require('jsonwebtoken');
-const jwtMiddleWare = require('../middlewares/jwtMiddleware');
-
 
 
 

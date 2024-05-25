@@ -32,6 +32,10 @@ app.use('/users', userRoute);
 const homeRoute = require('./routes/homeRoute'); 
 app.use('/homes', homeRoute);
 
+const roomRoute = require('./routes/roomRoute'); 
+app.use('/rooms', roomRoute);
+
+
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`L'application écoute sur le port ${port}`);

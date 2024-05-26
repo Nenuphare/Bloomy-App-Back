@@ -35,6 +35,8 @@ app.use('/homes', homeRoute);
 const roomRoute = require('./routes/roomRoute'); 
 app.use('/rooms', roomRoute);
 
+const taskRoute = require('./routes/taskRoute'); 
+app.use('/tasks', taskRoute);
 
 // Démarrage du serveur
 app.listen(port, () => {

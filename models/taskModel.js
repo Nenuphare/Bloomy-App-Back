@@ -1,48 +1,49 @@
-const { Sequelize, Datatypes } = require('sequelize');
+const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
 
-
+// Initialize Sequelize with the database configuration
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
     host: "127.0.0.1",
     dialect: "mariadb"
 });
 
+// Define the Task model
 const Task = sequelize.define('Task', {
-    id_type: {
-        type: Datatypes.INTEGER,
+    id: {
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
     setDate: {
-        type: Datatypes.DATE,
+        type: DataTypes.DATE,
         allowNull: false
     },
     title: {
-        type: Datatypes.STRING,
+        type: DataTypes.STRING,
         allowNull: false
     },
     deadline: {
-        type: Datatypes.DATE,
+        type: DataTypes.DATE,
         allowNull: true
     },
     finished: {
-        type: Datatypes.BOOLEAN,
+        type: DataTypes.BOOLEAN,
         defaultValue: false,
     },
     id_type: {
-        type: Datatypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     id_room: {
-        type: Datatypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
     id_user: {
-        type: Datatypes.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false
     },
-    recurence: {
-        type: Datatypes.INTEGER,
+    recurrence: {
+        type: DataTypes.INTEGER,
         defaultValue: 0
     }
 }, {
@@ -51,25 +52,12 @@ const Task = sequelize.define('Task', {
     underscored: true
 });
 
-
-// Définition des relations
+// Import related models
 const Type = require('./typeModel.js');
-Task.belongsTo(Type, { foreignKey: 'id_type' });
 const User = require('./userModel.js');
-Task.belongsTo(User, { foreignKey: 'id_user' });
 const Room = require('./roomModel.js');
+
+// Define relationships
+Task.belongsTo(Type, { foreignKey: 'id_type' });
+Task.belongsTo(User, { foreignKey: 'id_user' });
 Task.belongsTo(Room, { foreignKey: 'id_room' });
-
-
-
-// Synchronisation du modèle avec la base de données
-(async () => {
-    try {
-        await type.sync({ force: false });
-        console.log("Modèle type synchronisé avec la base de données.");
-    } catch (error) {
-        console.error("Erreur lors de la synchronisation du modèle type:", error);
-    }
-})();
-
-module.exports = Task;

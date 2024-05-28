@@ -9,7 +9,7 @@ router
     .post(roomController.createRoom);
     
 
-    router
+router
     .route('/homes/:id_home')
     .all(jwtMiddleware.verifyToken)
     .get(roomController.getAllRoomsFromHome);

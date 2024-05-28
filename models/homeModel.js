@@ -32,9 +32,9 @@ const Home = sequelize.define('Home', {
 (async () => {
     try {
         await Home.sync({ force: false });
-        console.log("Modèle Home synchronisé avec la base de données.");
+        console.log("Home: Model successfully synch to database");
     } catch (error) {
-        console.error("Erreur lors de la synchronisation du modèle Home:", error);
+        console.error("Home: Model synch error", error);
     }
 })();
 

@@ -28,9 +28,9 @@ const Type = sequelize.define('Type', {
 (async () => {
     try {
         await Type.sync({ force: false });
-        console.log("Modèle Type synchronisé avec la base de données.");
+        console.log("Type: Model successfully synch to database");
     } catch (error) {
-        console.error("Erreur lors de la synchronisation du modèle Type:", error);
+        console.error("Type: Model synch error", error);
     }
 })();
 

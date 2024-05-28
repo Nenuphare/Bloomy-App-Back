@@ -9,14 +9,10 @@ const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, proces
 
 // Define the Task model
 const Task = sequelize.define('Task', {
-    id: {
+    id_task: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
-    },
-    setDate: {
-        type: DataTypes.DATE,
-        allowNull: false
     },
     title: {
         type: DataTypes.STRING,
@@ -61,3 +57,16 @@ const Room = require('./roomModel.js');
 Task.belongsTo(Type, { foreignKey: 'id_type' });
 Task.belongsTo(User, { foreignKey: 'id_user' });
 Task.belongsTo(Room, { foreignKey: 'id_room' });
+
+
+// Synchronisation du modèle avec la base de données
+(async () => {
+    try {
+        await Task.sync({ force: false });
+        console.log("Task: Model successfully synch to database");
+    } catch (error) {
+        console.error("Task: Model synch error", error);
+    }
+})();
+
+module.exports = Task;

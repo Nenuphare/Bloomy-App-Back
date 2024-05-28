@@ -1,7 +1,10 @@
 const Room = require('../models/roomModel');
 const Home = require('../models/homeModel');
 
-// Create a new Room
+/*
+ * Create a room
+ */
+
 exports.createRoom = async (req, res) => {
     try {
         const { id_home, name } = req.body;

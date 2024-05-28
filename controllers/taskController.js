@@ -1,13 +1,34 @@
 const Task = require('../models/taskModel');
-const Room = require('../models/roomModel');
+const User = require('../models/userModel');
 
-// Create a new Task
+
+/*
+ * Create Task
+ */
+
 exports.createTask = async (req, res) => {
     try {
-        const task = await Task.create(req.body);
+        
+        // Check if user exist
+        const user = await User.findByPk(req.user.id_user);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const { title, deadline, id_type, id_room, recurrence } = req.body;
+
+
+        // Create the new task
+        const task = await Task.create({
+            title,
+            deadline,
+            id_type: id_type,
+            id_room: id_room,
+            id_user: req.user.id_user,
+            recurrence,
+        });
+
         res.status(201).json(task);
     } catch (error) {
-        res.status(500).json({message: "Error creating task", error});
+        res.status(500).json({message: 'Error creating task', error: error.message});
     }
 }
 

@@ -39,9 +39,9 @@ Room.belongsTo(Home, { foreignKey: 'id_home' });
 (async () => {
     try {
         await Room.sync({ force: false });
-        console.log("Modèle Room synchronisé avec la base de données.");
+        console.log("Room: Model successfully synch to database");
     } catch (error) {
-        console.error("Erreur lors de la synchronisation du modèle Room:", error);
+        console.error("Room: Model synch error", error);
     }
 })();
 

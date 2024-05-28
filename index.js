@@ -38,6 +38,9 @@ app.use('/rooms', roomRoute);
 const taskRoute = require('./routes/taskRoute'); 
 app.use('/tasks', taskRoute);
 
+const typeRoute = require('./routes/typeRoute'); 
+app.use('/types', typeRoute);
+
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`L'application écoute sur le port ${port}`);

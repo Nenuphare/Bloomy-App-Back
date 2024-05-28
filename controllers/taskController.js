@@ -1,5 +1,7 @@
 const Task = require('../models/taskModel');
 const User = require('../models/userModel');
+const Room = require('../models/roomModel');
+const Home = require('../models/homeModel');
 
 
 /*
@@ -46,12 +48,28 @@ exports.getTaskById = async (req, res) => {
 }
 
 // Get all Tasks
-exports.getAllTasks = async (req, res) => {
+exports.getHomeTasks = async (req, res) => {
     try {
-        const tasks = await Task.findAll();
-        res.status(200).json(tasks);
+        // Get all rooms associated with the home
+        const rooms = await Room.findAll({ where: { id_home: req.body.id_home }});
+
+        // Extract room IDs
+        const roomIds = rooms.map(room => room.id_room);
+
+        // Get all tasks associated with the rooms of the home
+        const homeTasks = await Task.findAll({
+            where: { id_room: roomIds },
+            include: [
+                {
+                    model: Room,
+                    include: [Home]
+                }
+            ]
+        });
+
+        res.status(200).json(homeTasks);
     } catch (error) {
-        res.status(500).json({message: "Error retrieving tasks", error});
+        res.status(500).json({message: "Error retrieving tasks", error: error.message});
     }
 }
 

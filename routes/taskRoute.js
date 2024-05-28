@@ -6,7 +6,8 @@ const jwtMiddleware = require('../middlewares/jwtMiddleware');
 router
     .route('/')
     .all(jwtMiddleware.verifyToken)
-    .post(taskController.createTask);
+    .post(taskController.createTask)
+    .get(taskController.getHomeTasks);
 
 
 module.exports = router;

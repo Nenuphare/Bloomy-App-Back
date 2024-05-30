@@ -2,7 +2,7 @@ const Room = require('../models/roomModel');
 const Type = require('../models/typeModel');
 
 /*
- * Create a room
+ * Create a type  A ENLEVER
  */
 
 exports.createType = async (req, res) => {

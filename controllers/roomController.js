@@ -8,7 +8,10 @@ const Home = require('../models/homeModel');
 exports.createRoom = async (req, res) => {
     try {
         const { id_home, name } = req.body;
-
+        
+        //check if id home or name is empty
+        if(!id_home || !name) return res.status(400).json({message: "id_home or room name cannot be empty"})
+        
         // Vérification si la maison existe
         const home = await Home.findByPk(id_home);
         if (!home) {
@@ -52,6 +55,9 @@ exports.updateRoom = async (req, res) => {
     try {
         const { id_room } = req.params;
         const { name } = req.body;
+
+        //check if name is empty
+        if(!name) return res.status(400).json({message: 'Room name cannot be empty'});
 
         // Récupération de la pièce par ID
         const room = await Room.findOne({

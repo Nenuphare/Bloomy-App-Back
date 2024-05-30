@@ -16,7 +16,8 @@ exports.createTask = async (req, res) => {
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         const { title, deadline, id_type, id_room, recurrence } = req.body;
-
+        //check if content is not empty
+        if(!title || !deadline || !id_type || !id_room || !recurrence) return res.status(400).json({message: 'Data Cannot be empty'});
 
         // Create the new task
         const task = await Task.create({
@@ -91,7 +92,11 @@ exports.updateTask = async (req, res) => {
     try {
         // Check id app exist
         const task = await Task.findByPk(req.params.id_task);
+        const { title, deadline, recurrence } = req.body;
+        //check if task exist
         if (!task) return res.status(404).json({message: "Task not found"});
+        //check if content is not empty
+        if(!title || !deadline || !recurrence) return res.status(400).json({message: 'Data Cannot be empty'});
 
         const newTask = await task.update(req.body);
 

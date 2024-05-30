@@ -34,9 +34,10 @@ exports.registerAUser = async (req, res) => {
         // Check if mail is already used
         const existingMail = await User.findOne({ where: { email: req.body.email } });
         const password = req.body.password;
+        
         if (existingMail) return res.status(400).json({ message: 'This email already exist.' });
         if (password.length < 8){
-            res.status(400).json({message: "The password is not long enough"});
+            return res.status(400).json({message: "The password is not long enough"});
         }
         const newUser = await User.create(req.body);
 
@@ -90,7 +91,13 @@ exports.putAUser = async (req, res) => {
     try {
         // Check if the user exist
         const user = await User.findOne({ where: { id_user: req.user.id_user}});
+        const password = req.body.password;
+        const firstname = req.body.firstname;
+        
         if (!user) return res.status(404).json({ message: 'User not found' });
+        if (!password && !firstname) return res.status(400).json({message: 'Password and Firstname cannot be both empty'});
+        //if (!firstname) return res.status(400).json({message: 'Firstname cannot be empty'});
+
 
         req.body.password = await bcrypt.hash(req.body.password, 10);
 

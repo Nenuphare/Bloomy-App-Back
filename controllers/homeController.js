@@ -35,7 +35,7 @@ exports.createAHome = async (req, res) => {
             id_user: user.id_user,
         });
 
-        res.status(201).json({ message: 'Home successfully added' });
+        res.status(201).json({ message: 'Home successfully added', id_home: newHome.id_home });
 
     } catch (error) {
         res.status(500).json({ message: 'Error processing data', error: error.message });

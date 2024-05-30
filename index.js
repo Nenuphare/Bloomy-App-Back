@@ -4,6 +4,12 @@ const app = express();
 const port = 3003;
 require('dotenv').config();
 
+const cors = require('cors');
+// app.use(cors());
+
+app.use(cors({origin: true, credentials: true}));
+
+
 const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
   dialect: 'mariadb',
   host: '127.0.0.1',
@@ -11,7 +17,7 @@ const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.D
   port: 3306,
   showWarnings: true,
   connectTimeout: 1000,
-  });
+});
 
 // Test de la connexion à la base de données
 db.authenticate()

@@ -31,14 +31,25 @@ exports.getAUser = async (req, res) => {
 
 exports.registerAUser = async (req, res) => {
     try {
-        // Check if mail is already used
-        const existingMail = await User.findOne({ where: { email: req.body.email } });
+        const email = req.body.email;
         const password = req.body.password;
+        const firstname = req.body.firstname;
+        const lastname = req.body.lastname;
+        const existingMail = await User.findOne({ where: { email } });
+
+        //check if email is not empty
+        if(!email) return res.status(400).json({message: "Email cannot be empty"});
         
+        // Check if mail is already used
         if (existingMail) return res.status(400).json({ message: 'This email already exist.' });
+        
+        //check if password is set and long
         if (password.length < 8){
             return res.status(400).json({message: "The password is not long enough"});
         }
+        //check if other variable are not empty
+        if(!firstname || !lastname) return res.status(400).json({message: "Firsname or lastname cannot be empty"});
+
         const newUser = await User.create(req.body);
 
         res.status(201).json({ message: `User n°${newUser.id_user} created : mail : ${newUser.email}` });

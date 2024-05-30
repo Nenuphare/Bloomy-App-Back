@@ -17,8 +17,11 @@ exports.createAHome = async (req, res) => {
 
         const { name } = req.body;
 
+        if(!name) return res.status(400).json({message: "Home name cannot be empty"});
+
         // Generate a unique share code for the home
         const share_code = generateShareCode();
+        if(!share_code) return res.status(500).json({message: "Share code generation failed"});
 
         // Create the new home
         const newHome = await Home.create({
@@ -56,8 +59,9 @@ exports.updateAHome = async(req, res) => {
         
         // Update the home
         const { name } = req.body;
-        await home.update({ name });
+        if(!name) return res.status(400).json({message: "Home name cannot be empty"});
         
+        await home.update({ name });
         res.status(201).json({ message: 'Home updated', home });
 
     } catch(error) {
@@ -104,6 +108,7 @@ exports.deleteAHome = async(req, res) =>{
 exports.getAllHome = async(req, res) => {  
     try {
         const Homes = await Home.findAll();
+        if(!Homes) return res.status(404).json({message: "No home was found"})
         res.status(201).json(Homes);
 
     } catch(error) {

@@ -146,7 +146,7 @@ exports.joinAHome = async(req, res) =>{
             id_home: home.id_home
         });
 
-        res.status(201).json({ message: `You successfully joined ${home.name}` });
+        res.status(201).json({ message: `You successfully joined ${home.name}`, id_home: home.id_home });
 
     } catch (error) {
         res.status(500).json({ message: 'Error processing data', error: error.message });

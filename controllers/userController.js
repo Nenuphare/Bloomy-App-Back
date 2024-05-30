@@ -33,8 +33,11 @@ exports.registerAUser = async (req, res) => {
     try {
         // Check if mail is already used
         const existingMail = await User.findOne({ where: { email: req.body.email } });
+        const password = req.body.password;
         if (existingMail) return res.status(400).json({ message: 'This email already exist.' });
-
+        if (password.length < 8){
+            res.status(400).json({message: "The password is not long enough"});
+        }
         const newUser = await User.create(req.body);
 
         res.status(201).json({ message: `User n°${newUser.id_user} created : mail : ${newUser.email}` });

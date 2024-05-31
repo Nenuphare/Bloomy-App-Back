@@ -58,11 +58,11 @@ exports.getTaskById = async (req, res) => {
 exports.getHomeTasks = async (req, res) => {
     try {
         // Check if home exist
-        const home = await Home.findByPk(req.body.id_home);
+        const home = await Home.findByPk(req.params.id_home);
         if (!home) return res.status(404).json({ message: "This home doesn't exist" });
 
         // Get all rooms associated with the home
-        const rooms = await Room.findAll({ where: { id_home: req.body.id_home }});
+        const rooms = await Room.findAll({ where: { id_home: req.params.id_home }});
 
         // Extract room IDs
         const roomIds = rooms.map(room => room.id_room);

@@ -17,7 +17,7 @@ exports.createTask = async (req, res) => {
 
         const { title, deadline, id_type, id_room, recurrence } = req.body;
         //check if content is not empty
-        if(!title || !deadline || !id_type || !id_room || !recurrence) return res.status(400).json({message: 'Data Cannot be empty'});
+        if(!title || !deadline || !id_room) return res.status(400).json({message: 'Data Cannot be empty'});
 
         // Create the new task
         const task = await Task.create({

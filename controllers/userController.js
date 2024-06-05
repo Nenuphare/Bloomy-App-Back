@@ -66,10 +66,13 @@ exports.registerAUser = async (req, res) => {
 
 exports.loginAUser = async (req, res) => {
     try {
-        // Check if the user exist
+        
         const user = await User.findOne({ where: { email: req.body.email } });
+        const home = await UserHome.findOne({where: {id_user: user.id_user}});
+        
+        // Check if the user exist
         if (!user) return res.status(404).json({ message: 'User not found' });
-
+        
         // Check password
         const password = await bcrypt.compare(req.body.password, user.password);
 
@@ -81,7 +84,7 @@ exports.loginAUser = async (req, res) => {
             };
 
             const token = jwt.sign(userData, process.env.JWT_KEY, { expiresIn: "30d" });
-            res.status(200).json({ token });
+            res.status(200).json({ message: "Loged in", token: token, id_user: user.id_user, id_home: home?.id_home });
 
         } else {
             res.status(401).json({ message: 'Incorrect email or password.', err });

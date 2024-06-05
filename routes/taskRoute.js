@@ -6,16 +6,18 @@ const jwtMiddleware = require('../middlewares/jwtMiddleware');
 router
     .route('/')
     .all(jwtMiddleware.verifyToken)
-    .post(taskController.createTask)
-    .get(taskController.getHomeTasks);
+    .post(taskController.createTask);
 
 router
     .route('/:id_task')
     .all(jwtMiddleware.verifyToken)
     .put(taskController.updateTask)
-    .delete(taskController.deleteTask)
+    .delete(taskController.deleteTask);
+    
 
-
-
+router
+    .route('/home/:id_home')
+    .all(jwtMiddleware.verifyToken)
+    .get(taskController.getHomeTasks);
 
 module.exports = router;

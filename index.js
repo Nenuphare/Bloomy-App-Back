@@ -10,11 +10,11 @@ const cors = require('cors');
 app.use(cors({origin: true, credentials: true}));
 
 
-const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-  dialect: 'mariadb',
-  host: '100.20.92.101',
-  database: 'bloomy_app',
-  port: 3306,
+const db = new Sequelize(process.env.DB_NAME, process.env.MYSQLUSER, process.env.MYSQL_ROOT_PASSWORD, {
+  dialect: 'mysql',
+  host: process.env.MYSQLHOST,
+  database: process.env.MYSQLDATABASE,
+  port: process.env.MYSQLPORT,
   showWarnings: true,
   connectTimeout: 1000,
 });
@@ -22,7 +22,7 @@ const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.D
 // Test de la connexion à la base de données
 db.authenticate()
 .then(() => {
-  console.log("Connecté à la base de données MariaDB !");
+  console.log("Connecté à la base de données MySql !");
 })
 .catch(err => {
   console.error("Impossible de se connecter à la base de données:", err);

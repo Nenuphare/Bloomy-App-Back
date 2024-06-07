@@ -87,7 +87,7 @@ exports.loginAUser = async (req, res) => {
             res.status(200).json({ message: "Loged in", token: token, id_user: user.id_user, id_home: home?.id_home });
 
         } else {
-            res.status(401).json({ message: 'Incorrect email or password.', err });
+            res.status(401).json({ message: 'Incorrect email or password.'});
         }
         
     } catch (error) {

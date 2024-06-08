@@ -16,14 +16,14 @@ const sequelize = new Sequelize(process.env.MYSQLDATABASE, process.env.MYSQLUSER
   dialect: 'mysql'
 });
 
-// Test de la connexion à la base de données
-db.authenticate()
-.then(() => {
-  console.log("Connecté à la base de données MySql !");
-})
-.catch(err => {
-  console.error("Impossible de se connecter à la base de données:", err);
-});
+// Test the connection to the database
+sequelize.authenticate()
+  .then(() => {
+    console.log("Connected to the MySQL database!");
+  })
+  .catch(err => {
+    console.error("Unable to connect to the database:", err);
+  });
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); 

@@ -10,17 +10,10 @@ const cors = require('cors');
 app.use(cors({origin: true, credentials: true}));
 
 
-const db = new Sequelize(process.env.MYSQL_URL
-  , {
-  dialect: 'mysql',
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false,
-    },
-  },
-  logging: console.log,
-  connectTimeout: 10000, // increase timeout for remote connections
+const sequelize = new Sequelize(process.env.MYSQLDATABASE, process.env.MYSQLUSER, process.env.MYSQLPASSWORD, {
+  host: process.env.MYSQLHOST,
+  port: process.env.MYSQLPORT,
+  dialect: 'mysql'
 });
 
 // Test de la connexion à la base de données

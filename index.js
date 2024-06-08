@@ -10,7 +10,7 @@ const cors = require('cors');
 app.use(cors({origin: true, credentials: true}));
 
 
-const db = new Sequelize(process.env.MYSQL_PRIVATE_URL
+const db = new Sequelize(process.env.MYSQL_URL
   , {
   dialect: 'mysql',
   dialectOptions: {

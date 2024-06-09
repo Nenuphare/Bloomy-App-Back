@@ -2,10 +2,10 @@ const { Sequelize, DataTypes } = require('sequelize');
 require('dotenv').config();
 
 const sequelize = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-  dialect: 'mariadb',
-  host: '127.0.0.1',
-  database: 'bloomy_app',
-  port: 3306,
+  dialect: 'mysql',
+  host: process.env.DB_HOST,
+  database: process.env.DB_NAME,
+  port: process.env.DB_HOST || 3306,
   showWarnings: true,
   connectTimeout: 1000,
 });

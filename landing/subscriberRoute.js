@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const subscriberController = require('../landing/subscriberController');
-// const jwtMiddleware = require('../middlewares/jwtMiddleware');
+const subscriberController = require('./subscriberController');
+const authMiddleware = require('./subscriberJwtMiddleware');
 
 
 router
     .route('/')
-    .post(subscriberController.createSubscriber)
+    .post(authMiddleware, subscriberController.createSubscriber)
 
     
 module.exports = router;

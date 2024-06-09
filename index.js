@@ -7,7 +7,6 @@ require('dotenv').config();
 const cors = require('cors');
 app.use(cors({ origin: true, credentials: true }));
 
-
 // Test de la connexion à la base de données
 sequelize.authenticate()
   .then(() => {

@@ -1,8 +1,5 @@
-const Home = require('../models/homeModel');
-const UserHome = require('../models/userHomeModel');
-const User = require('../models/userModel');
+const { User, Home, UserHome } = require('../models/index');
 const generateShareCode = require('../utils/shareCodeGenerator');
-
 
 
 /*

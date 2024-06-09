@@ -1,5 +1,5 @@
-const Room = require('../models/roomModel');
-const Type = require('../models/typeModel');
+const { Type } = require('../models/index');
+
 
 /*
  * Create a type  A ENLEVER

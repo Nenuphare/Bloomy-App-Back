@@ -4,7 +4,7 @@
   "description": "Bloomy App API",
   "main": "index.js",
   "scripts": {
-    "test": "node index.js"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -24,5 +24,8 @@
     "jsonwebtoken": "^9.0.2",
     "mariadb": "^3.3.0",
     "sequelize": "^6.37.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.3"
   }
 }

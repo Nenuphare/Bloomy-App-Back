@@ -1,7 +1,4 @@
-const Task = require('../models/taskModel');
-const User = require('../models/userModel');
-const Room = require('../models/roomModel');
-const Home = require('../models/homeModel');
+const { Task, User, Room, Home} = require('../models/roomModel');
 
 
 /*

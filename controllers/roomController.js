@@ -1,5 +1,5 @@
-const Room = require('../models/roomModel');
-const Home = require('../models/homeModel');
+const { Home, Room } = require('../models/index');
+
 
 /*
  * Create a room

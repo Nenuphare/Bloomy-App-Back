@@ -1,53 +1,48 @@
 const express = require('express');
-const Sequelize = require("sequelize");
+const { sequelize } = require('./models');
 const app = express();
 const port = 3003;
 require('dotenv').config();
 
 const cors = require('cors');
-// app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
 
-app.use(cors({origin: true, credentials: true}));
-
-
-const db = new Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-  dialect: 'mariadb',
-  host: '127.0.0.1',
-  database: 'bloomy_app',
-  port: 3306,
-  showWarnings: true,
-  connectTimeout: 1000,
-});
 
 // Test de la connexion à la base de données
-db.authenticate()
-.then(() => {
-  console.log("Connecté à la base de données MariaDB !");
-})
-.catch(err => {
-  console.error("Impossible de se connecter à la base de données:", err);
-});
+sequelize.authenticate()
+  .then(() => {
+    console.log('Connecté à la base de données MariaDB !');
+    // Synchroniser les modèles avec la base de données
+    return sequelize.sync({ force: false }); // Ceci synchronisera tous les modèles avec la base de données
+  })
+  .then(() => {
+    console.log('Tous les modèles synchronisés avec la base de données');
+  })
+  .catch((err) => {
+    console.error("Impossible de se connecter à la base de données:", err);
+  });
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); 
 
-// Configuration des routes
+
+// ROUTES CONFIGURATIONS
 const userRoute = require('./routes/userRoute'); 
-app.use('/users', userRoute);
-
 const homeRoute = require('./routes/homeRoute'); 
-app.use('/homes', homeRoute);
-
 const roomRoute = require('./routes/roomRoute'); 
-app.use('/rooms', roomRoute);
-
 const taskRoute = require('./routes/taskRoute'); 
+const typeRoute = require('./routes/typeRoute');
+const subscriberRoute = require('./landing/subscriberRoute'); 
+
+app.use('/users', userRoute);
+app.use('/homes', homeRoute);
+app.use('/rooms', roomRoute);
 app.use('/tasks', taskRoute);
-
-const typeRoute = require('./routes/typeRoute'); 
 app.use('/types', typeRoute);
+app.use('/subscribe', subscriberRoute);
 
-// Démarrage du serveur
+
+// SERVER STARTING
 app.listen(port, () => {
   console.log(`L'application écoute sur le port ${port}`);
 });

@@ -1,6 +1,4 @@
-const User = require('../models/userModel');
-const Home = require('../models/homeModel');
-const UserHome = require('../models/userHomeModel');
+const { User, Home, UserHome } = require('../models/index');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 require('dotenv').config();

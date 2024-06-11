@@ -186,3 +186,33 @@ exports.exitAHome = async (req, res) => {
         res.status(500).json({ message: 'Error processing data', error: error.message });
     }
 };
+
+
+/*
+ * Get the home of a members
+ */
+exports.getHomeUsers = async (req, res) => {
+    try {
+        // Check if user exists
+        const user = await User.findByPk(req.user.id_user);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        // Check if home exist
+        const home = await Home.findByPk(req.params.id_home);
+        if (!home) return res.status(404).json({ message: "This home doesn't exist" });
+
+        // Get user homes
+        const userHomes = await UserHome.findAll({
+            where: { id_home: home.id_home },
+            include: [User] // Include the Home model to get the related users
+        });
+
+        // Check if homes exist
+        if (!userHomes.length) return res.status(404).json({ message: 'No members found for this home' });
+
+        res.status(200).json(userHomes);
+        
+    } catch (error) {
+        res.status(500).json({ message: 'Error processing data', error: error.message });
+    }
+};

@@ -85,7 +85,7 @@ exports.loginAUser = async (req, res) => {
             res.status(200).json({ message: "Loged in", token: token, id_user: user.id_user, id_home: home?.id_home });
 
         } else {
-            res.status(401).json({ message: 'Incorrect email or password.', err });
+            res.status(401).json({ message: 'Incorrect email or password.' });
         }
         
     } catch (error) {
@@ -168,9 +168,8 @@ exports.deleteAUser = async (req, res) => {
  */
 exports.getUserHomes = async (req, res) => {
     try {
-        const user = await User.findByPk(req.user.id_user);
-
         // Check if user exists
+        const user = await User.findByPk(req.user.id_user);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         // Get user homes

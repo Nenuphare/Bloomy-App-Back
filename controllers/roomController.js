@@ -55,13 +55,11 @@ exports.updateRoom = async (req, res) => {
         const { id_room } = req.params;
         const { name } = req.body;
 
-        //check if name is empty
+        // Check if name is empty
         if(!name) return res.status(400).json({message: 'Room name cannot be empty'});
 
-        // Récupération de la pièce par ID
-        const room = await Room.findOne({
-            where: { id_room }
-        });
+        // Get room
+        const room = await Room.findByPk(id_room);
 
         // Vérification si la pièce existe
         if (!room) {

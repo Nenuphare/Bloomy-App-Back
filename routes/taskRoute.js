@@ -16,7 +16,7 @@ router
     
 
 router
-    .route('/home/:id_home')
+    .route('/homes/:id_home')
     .all(jwtMiddleware.verifyToken)
     .get(taskController.getHomeTasks);
 

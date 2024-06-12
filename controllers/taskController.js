@@ -1,4 +1,4 @@
-const { Task, User, Room, Home} = require('../models/roomModel');
+const { Task, User, Room, Home, Type } = require('../models/index');
 
 
 /*
@@ -7,20 +7,25 @@ const { Task, User, Room, Home} = require('../models/roomModel');
 
 exports.createTask = async (req, res) => {
     try {
-        
         // Check if user exist
         const user = await User.findByPk(req.user.id_user);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const { title, deadline, id_type, id_room, recurrence } = req.body;
+        const { title, deadline, id_type, id_home, id_room, recurrence } = req.body;
         //check if content is not empty
-        if(!title || !deadline || !id_room) return res.status(400).json({message: 'Data Cannot be empty'});
+        if(!title || !deadline || !id_home) return res.status(400).json({message: 'Data Cannot be empty'});
+
+
+        // Check if type exist
+        const type = await Type.findByPk(id_type);
+        if (!type) return res.status(400).json({ message: 'Invalid type ID' });
 
         // Create the new task
         const task = await Task.create({
             title,
             deadline,
             id_type: id_type,
+            id_home: id_home,
             id_room: id_room,
             id_user: req.user.id_user,
             recurrence,
@@ -57,22 +62,10 @@ exports.getHomeTasks = async (req, res) => {
         // Check if home exist
         const home = await Home.findByPk(req.params.id_home);
         if (!home) return res.status(404).json({ message: "This home doesn't exist" });
-
-        // Get all rooms associated with the home
-        const rooms = await Room.findAll({ where: { id_home: req.params.id_home }});
-
-        // Extract room IDs
-        const roomIds = rooms.map(room => room.id_room);
-
+        
         // Get all tasks associated with the rooms of the home
         const homeTasks = await Task.findAll({
-            where: { id_room: roomIds },
-            include: [
-                {
-                    model: Room,
-                    include: [Home]
-                }
-            ]
+            where: { id_home: req.params.id_home },
         });
 
         res.status(200).json(homeTasks);

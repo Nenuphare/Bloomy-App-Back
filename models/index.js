@@ -15,7 +15,7 @@ const User = require('./userModel')(sequelize, DataTypes);
 const Home = require('./homeModel')(sequelize, DataTypes);
 const Room = require('./roomModel')(sequelize, DataTypes, User);
 const Type = require('./typeModel')(sequelize, DataTypes);
-const Task = require('./taskModel')(sequelize, DataTypes, Type, User, Room);
+const Task = require('./taskModel')(sequelize, DataTypes, Type, User, Room, Home);
 const Setting = require('./settingModel')(sequelize, DataTypes, User);
 const UserHome = require('./userHomeModel')(sequelize, DataTypes, User, Home);
 

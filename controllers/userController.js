@@ -120,7 +120,7 @@ exports.loginAUser = async (req, res) => {
 exports.putAUser = async (req, res) => {
     try {
         // Check if the user exists
-        const user = await User.findOne({ where: { id_user: req.user.id_user } });
+        const user = await User.findByPk(req.user.id_user);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
         // Check if the current password matches
@@ -129,11 +129,11 @@ exports.putAUser = async (req, res) => {
             return res.status(403).json({ message: 'Incorrect old password' });
         }
 
-        const { firstname, lastname, password } = req.body;
+        const { firstname, lastname, newPassword } = req.body;
         const updates = {};
 
         // Check if firstname is provided and contains only letters
-        if (firstname !== undefined) {
+        if (!firstname) {
             const nameRegex = /^[A-Za-z]+$/;
             if (!nameRegex.test(firstname)) {
                 return res.status(400).json({ message: "Firstname can only contain letters" });
@@ -142,7 +142,7 @@ exports.putAUser = async (req, res) => {
         }
 
         // Check if lastname is provided and contains only letters
-        if (lastname !== undefined) {
+        if (!lastname) {
             const nameRegex = /^[A-Za-z]+$/;
             if (!nameRegex.test(lastname)) {
                 return res.status(400).json({ message: "Lastname can only contain letters" });
@@ -151,16 +151,19 @@ exports.putAUser = async (req, res) => {
         }
 
         // Check if new password is provided and meets length requirements
-        if (password !== undefined) {
-            if (password.length < 8) {
+        if (!newPassword) {
+            if (newPassword.length < 8) {
                 return res.status(400).json({ message: "The password is not long enough" });
             }
-            updates.password = await bcrypt.hash(password, 10);
-        }
 
-        // If no updates were provided, return an error
-        if (Object.keys(updates).length === 0) {
-            return res.status(400).json({ message: 'No updates provided' });
+            // Logging the password before hashing
+            console.log('Password before hashing:', newPassword);
+
+            const algo = await bcrypt.genSalt(10);
+            updates.password = await bcrypt.hash(newPassword, algo);
+
+            // Logging the hashed password after hashing
+            console.log('Hashed password:', updates.newPassword);
         }
 
         // Update the user with the provided fields
@@ -171,6 +174,7 @@ exports.putAUser = async (req, res) => {
         res.status(500).json({ message: 'Error processing data', error: error.message });
     }
 };
+
 
 
 /*

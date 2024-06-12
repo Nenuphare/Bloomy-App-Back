@@ -25,7 +25,11 @@ exports.createRoom = async (req, res) => {
     }
 };
 
-// Get all Rooms from a Home
+
+/*
+ * Get all home rooms
+ */
+
 exports.getAllRoomsFromHome = async (req, res) => {
     try {
         const { id_home } = req.params;
@@ -49,7 +53,11 @@ exports.getAllRoomsFromHome = async (req, res) => {
     }
 };
 
-// Update a Room by ID
+
+/*
+ * Update a room
+ */
+
 exports.updateRoom = async (req, res) => {
     try {
         const { id_room } = req.params;
@@ -87,10 +95,14 @@ exports.updateRoom = async (req, res) => {
     }
 };
 
-// Delete a Room by ID
+
+/*
+ * Delete a room
+ */
+
 exports.deleteRoom = async (req, res) => {
     try {
-        // Ceck if room exist
+        // Check if room exist
         const room = await Room.findByPk(req.params.id_room);
         if (!room) return res.status(404).json({ error: 'Room not found' });
 

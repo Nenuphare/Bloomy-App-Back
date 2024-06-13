@@ -133,7 +133,7 @@ exports.putAUser = async (req, res) => {
         const updates = {};
 
         // Check if firstname is provided and contains only letters
-        if (!firstname) {
+        if (firstname) {
             const nameRegex = /^[A-Za-z]+$/;
             if (!nameRegex.test(firstname)) {
                 return res.status(400).json({ message: "Firstname can only contain letters" });
@@ -142,7 +142,7 @@ exports.putAUser = async (req, res) => {
         }
 
         // Check if lastname is provided and contains only letters
-        if (!lastname) {
+        if (lastname) {
             const nameRegex = /^[A-Za-z]+$/;
             if (!nameRegex.test(lastname)) {
                 return res.status(400).json({ message: "Lastname can only contain letters" });
@@ -151,19 +151,11 @@ exports.putAUser = async (req, res) => {
         }
 
         // Check if new password is provided and meets length requirements
-        if (!newPassword) {
+        if (newPassword) {
             if (newPassword.length < 8) {
                 return res.status(400).json({ message: "The password is not long enough" });
             }
-
-            // Logging the password before hashing
-            console.log('Password before hashing:', newPassword);
-
-            const algo = await bcrypt.genSalt(10);
-            updates.password = await bcrypt.hash(newPassword, algo);
-
-            // Logging the hashed password after hashing
-            console.log('Hashed password:', updates.newPassword);
+            updates.password = newPassword;
         }
 
         // Update the user with the provided fields

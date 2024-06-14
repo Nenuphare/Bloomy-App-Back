@@ -11,9 +11,9 @@ exports.createTask = async (req, res) => {
         const user = await User.findByPk(req.user.id_user);
         if (!user) return res.status(404).json({ message: 'User not found' });
 
-        const { title, deadline, id_type, id_home, id_room, recurrence } = req.body;
+        const { title, deadline, id_type, id_home, id_room, id_user, recurrence } = req.body;
         //check if content is not empty
-        if(!title || !deadline || !id_home) return res.status(400).json({message: 'Data Cannot be empty'});
+        if(!title || !id_home) return res.status(400).json({message: 'Data Cannot be empty'});
 
 
         // Check if type exist
@@ -27,7 +27,7 @@ exports.createTask = async (req, res) => {
             id_type: id_type,
             id_home: id_home,
             id_room: id_room,
-            id_user: req.user.id_user,
+            id_user: id_user,
             recurrence,
         });
 
@@ -63,12 +63,34 @@ exports.getHomeTasks = async (req, res) => {
         const home = await Home.findByPk(req.params.id_home);
         if (!home) return res.status(404).json({ message: "This home doesn't exist" });
         
-        // Get all tasks associated with the rooms of the home
+        // Get all tasks associated with tis home
         const homeTasks = await Task.findAll({
             where: { id_home: req.params.id_home },
         });
 
         res.status(200).json(homeTasks);
+    } catch (error) {
+        res.status(500).json({message: "Error retrieving tasks", error: error.message});
+    }
+}
+
+
+/*
+ * Get all room tasks
+ */
+
+exports.getRoomTasks = async (req, res) => {
+    try {
+        // Check if home exist
+        const room = await Room.findByPk(req.params.id_room);
+        if (!room) return res.status(404).json({ message: "This room doesn't exist" });
+        
+        // Get all tasks associated with this rooms
+        const roomTasks = await Task.findAll({
+            where: { id_room: req.params.id_room },
+        });
+
+        res.status(200).json(roomTasks);
     } catch (error) {
         res.status(500).json({message: "Error retrieving tasks", error: error.message});
     }
@@ -95,6 +117,30 @@ exports.updateTask = async (req, res) => {
         res.status(500).json({message: "Error updating task", error: error.message});
     }
 }
+
+
+/*
+ * Update task status
+ */
+
+exports.updateTaskStatus = async (req, res) => {
+    try {
+        // Check if task exists
+        const task = await Task.findByPk(req.params.id_task);
+        if (!task) return res.status(404).json({ message: "Task not found" });
+
+        const { finished } = req.body;
+        if (typeof finished !== 'boolean') return res.status(400).json({ message: 'Invalid completed status' });
+
+        task.finished = finished;
+        await task.save();
+
+        res.status(200).json(task);
+    } catch (error) {
+        res.status(500).json({ message: "Error updating task status", error: error.message });
+    }
+};
+
 
 /*
  * Delete a task

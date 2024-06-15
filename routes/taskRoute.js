@@ -12,7 +12,8 @@ router
     .route('/:id_task')
     .all(jwtMiddleware.verifyToken)
     .put(taskController.updateTask)
-    .delete(taskController.deleteTask);
+    .delete(taskController.deleteTask)
+    .patch(taskController.updateTaskTitle);
 
 router
     .route('/:id_task/status')

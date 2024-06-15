@@ -108,7 +108,7 @@ exports.updateTask = async (req, res) => {
         //check if task exist
         if (!task) return res.status(404).json({message: "Task not found"});
         //check if content is not empty
-        if(!title || !deadline || !recurrence) return res.status(400).json({message: 'Data Cannot be empty'});
+        if (!title) return res.status(400).json({message: 'Data Cannot be empty'});
 
         const newTask = await task.update(req.body);
 
@@ -138,6 +138,30 @@ exports.updateTaskStatus = async (req, res) => {
         res.status(200).json(task);
     } catch (error) {
         res.status(500).json({ message: "Error updating task status", error: error.message });
+    }
+};
+
+
+/*
+ * Update task title
+ */
+
+exports.updateTaskTitle = async (req, res) => {
+    try {
+        // Check if task exists
+        const task = await Task.findByPk(req.params.id_task);
+        if (!task) return res.status(404).json({ message: "Task not found" });
+
+        const { title } = req.body;
+        console.log('title', title);
+        if (!title) return res.status(400).json({ message: 'Title cannot be empty' });
+
+        task.title = title;
+        await task.save();
+
+        res.status(200).json(task);
+    } catch (error) {
+        res.status(500).json({ message: "Error updating task title", error: error.message });
     }
 };
 

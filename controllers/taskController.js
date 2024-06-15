@@ -65,7 +65,10 @@ exports.getHomeTasks = async (req, res) => {
         
         // Get all tasks associated with tis home
         const homeTasks = await Task.findAll({
-            where: { id_home: req.params.id_home },
+            where: { 
+                id_home: req.params.id_home,
+                finished: false
+            },
         });
 
         res.status(200).json(homeTasks);
@@ -87,7 +90,10 @@ exports.getRoomTasks = async (req, res) => {
         
         // Get all tasks associated with this rooms
         const roomTasks = await Task.findAll({
-            where: { id_room: req.params.id_room },
+            where: { 
+                id_room: req.params.id_room,
+                finished: false
+            },
         });
 
         res.status(200).json(roomTasks);

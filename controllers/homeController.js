@@ -56,12 +56,32 @@ exports.updateAHome = async(req, res) => {
         
         // Update the home
         const { name } = req.body;
-        if(!name) return res.status(400).json({message: "Home name cannot be empty"});
+        if(!name) return res.status(400).json({ message: "Home name cannot be empty" });
         
         await home.update({ name });
         res.status(201).json({ message: 'Home updated', home });
 
     } catch(error) {
+        res.status(500).json({ message: 'Error processing data', error: error.message });
+    }
+}
+
+
+/*
+ * Get a home
+ */
+
+exports.getAHome = async (req, res) => {
+    try {
+        // Check if user exist
+        const user = await User.findByPk(req.user.id_user);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        const home = await Home.findByPk(req.params.id_home);
+        if (!home) return res.status(404).json({ message: 'Home not found' });
+
+        res.status(200).json(home);
+    } catch (error) {
         res.status(500).json({ message: 'Error processing data', error: error.message });
     }
 }

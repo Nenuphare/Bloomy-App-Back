@@ -129,7 +129,7 @@ exports.putAUser = async (req, res) => {
             return res.status(403).json({ message: 'Incorrect old password' });
         }
 
-        const { firstname, lastname, newPassword } = req.body;
+        const { firstname, lastname, email, newPassword } = req.body;
         const updates = {};
 
         // Check if firstname is provided and contains only letters
@@ -148,6 +148,15 @@ exports.putAUser = async (req, res) => {
                 return res.status(400).json({ message: "Lastname can only contain letters" });
             }
             updates.lastname = lastname;
+        }
+
+        // Check if email is provided and correctly formatted
+        if (email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                return res.status(400).json({ message: "Invalid email format" });
+            }
+            updates.email = email;
         }
 
         // Check if new password is provided and meets length requirements

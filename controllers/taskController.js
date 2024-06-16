@@ -139,6 +139,17 @@ exports.updateTaskStatus = async (req, res) => {
         if (typeof finished !== 'boolean') return res.status(400).json({ message: 'Invalid completed status' });
 
         task.finished = finished;
+
+        // Recurrence
+        if (task.recurrence > 0 && task.finished) {
+            const currentDate = task.deadline || new Date();
+            const newDeadline = new Date(currentDate.setDate(currentDate.getDate() + task.recurrence));
+
+            const formattedDeadline = newDeadline.toISOString().slice(0, 19).replace('T', ' ');
+            task.deadline = formattedDeadline;
+            task.finished = false;
+        }
+
         await task.save();
 
         res.status(200).json(task);

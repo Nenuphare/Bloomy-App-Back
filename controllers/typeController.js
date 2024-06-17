@@ -1,4 +1,5 @@
 const { User, Type } = require('../models/index');
+const { checkUserHome } = require('../policy/checkUserHome');
 
 
 /*
@@ -8,6 +9,10 @@ const { User, Type } = require('../models/index');
 exports.createType = async (req, res) => {
     try {
         const { name } = req.body;
+
+        // Check if user is in first home
+        if (!checkUserHome(req.user.id_user, 1)) 
+            return res.status(403).json({ message: "You don't have permission to create a type" });
 
         const newType = await Type.create({ name });
 
@@ -51,6 +56,10 @@ exports.updateAType = async(req, res) => {
         // Check if type exist
         const type = await Type.findByPk(req.params.id_type);
         if (!type) return res.status(404).json({ message: "This type doesn't exist" });
+
+        // Check if user is in first home
+        if (!checkUserHome(req.user.id_user, 1)) 
+            return res.status(403).json({ message: "You don't have permission to update a type" });
         
         // Check if name is not empty
         const { name } = req.body;
@@ -77,6 +86,10 @@ exports.deleteType = async (req, res) => {
         // Check if type exist
         const type = await Type.findByPk(req.params.id_type);
         if (!type) return res.status(404).json({ error: 'Type not found' });
+
+        // Check if user is in first home
+        if (!checkUserHome(req.user.id_user, 1)) 
+            return res.status(403).json({ message: "You don't have permission to delete a type" });
 
         await type.destroy();
         res.status(200).json({message: "Type deleted"});

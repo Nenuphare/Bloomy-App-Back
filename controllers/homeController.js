@@ -132,22 +132,6 @@ exports.deleteAHome = async(req, res) =>{
 
 
 /*
- * Get all home
- */
-
-// exports.getAllHome = async(req, res) => {  
-//     try {
-//         const Homes = await Home.findAll();
-//         if(!Homes) return res.status(404).json({message: "No home was found"})
-//         res.status(201).json(Homes);
-
-//     } catch(error) {
-//         res.status(500).json({ message: 'Error processing data', error: error.message });
-//     }
-// }
-
-
-/*
  * Join a home
  */
 

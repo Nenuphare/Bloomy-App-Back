@@ -32,16 +32,3 @@ exports.verifyToken = async(req, res, next) =>{
         res.status(403).json({ message: 'Access forbidden: invalid token' });
     }
 }
-
-/*
- * Decode token
- */
-
-// exports.decode = function (jwt, options) {
-//     options = options || {};
-//     var decoded = jws.decode(jwt, options);
-//     if (!decoded) { return null; }
-//     var payload = decoded.payload;
-  
-//     return payload;
-// };

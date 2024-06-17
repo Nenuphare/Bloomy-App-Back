@@ -8,7 +8,7 @@ router
     .route('/')
     .all(jwtMiddleware.verifyToken)
     .post(homeController.createAHome)
-    .get(homeController.getAllHome)
+    // .get(homeController.getAllHome)
     
 router
     .route('/:id_home')

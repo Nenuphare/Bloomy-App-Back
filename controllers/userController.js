@@ -111,8 +111,6 @@ exports.loginAUser = async (req, res) => {
 };
 
 
-
-
 /*
  * Update a user
  */
@@ -223,6 +221,7 @@ exports.deleteAUser = async (req, res) => {
 /*
  * Get the homes of a user
  */
+
 exports.getUserHomes = async (req, res) => {
     try {
         // Check if user exists

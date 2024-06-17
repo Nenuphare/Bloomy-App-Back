@@ -35,12 +35,14 @@ module.exports = (sequelize, DataTypes) => {
 
     // HASH BEFORE SAVING TO DB
     User.addHook('beforeSave', async (user) => {
-        try {
-            const algo = await bcrypt.genSalt(10);
-            const hashPw = await bcrypt.hash(user.password, algo);
-            user.password = hashPw;
-        } catch (error) {
-            throw new Error(error);
+        if (user.changed('password')) {
+            try {
+                const algo = await bcrypt.genSalt(10);
+                const hashPw = await bcrypt.hash(user.password, algo);
+                user.password = hashPw;
+            } catch (error) {
+                throw new Error(error);
+            }
         }
     });
 

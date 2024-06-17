@@ -25,44 +25,49 @@ exports.createRoom = async (req, res) => {
     }
 };
 
-// Get all Rooms from a Home
+
+/*
+ * Get all home rooms
+ */
+
 exports.getAllRoomsFromHome = async (req, res) => {
     try {
         const { id_home } = req.params;
 
-        // Vérification si la maison existe
+        // Check if home exsit
         const home = await Home.findByPk(id_home);
-        if (!home) {
-            return res.status(404).json({ error: 'Home not found' });
-        }
+        if (!home) return res.status(404).json({ error: 'Home not found' });
 
         // Récupération des pièces associées à la maison
         const rooms = await Room.findAll({
             where: { id_home },
-            include: {
-                model: Home,
-                attributes: ['name']
-            }
+            // include: {
+            //     model: Home,
+            //     attributes: ['name']
+            // }
         });
+
         res.status(200).json(rooms);
     } catch (error) {
         res.status(500).json({ error: 'Failed to retrieve rooms', details: error.message });
     }
 };
 
-// Update a Room by ID
+
+/*
+ * Update a room
+ */
+
 exports.updateRoom = async (req, res) => {
     try {
         const { id_room } = req.params;
         const { name } = req.body;
 
-        //check if name is empty
+        // Check if name is empty
         if(!name) return res.status(400).json({message: 'Room name cannot be empty'});
 
-        // Récupération de la pièce par ID
-        const room = await Room.findOne({
-            where: { id_room }
-        });
+        // Get room
+        const room = await Room.findByPk(id_room);
 
         // Vérification si la pièce existe
         if (!room) {
@@ -86,18 +91,21 @@ exports.updateRoom = async (req, res) => {
         // Réponse réussie avec les informations de la pièce mise à jour
         return res.status(200).json(room);
     } catch (error) {
-        // Gestion des erreurs
         return res.status(500).json({ error: 'Failed to update room', details: error.message });
     }
 };
 
-// Delete a Room by ID
+
+/*
+ * Delete a room
+ */
+
 exports.deleteRoom = async (req, res) => {
     try {
+        // Check if room exist
         const room = await Room.findByPk(req.params.id_room);
-        if (!room) {
-            return res.status(404).json({ error: 'Room not found' });
-        }
+        if (!room) return res.status(404).json({ error: 'Room not found' });
+
         await room.destroy();
         res.status(200).json({message: "Room deleted"});
     } catch (error) {

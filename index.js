@@ -1,24 +1,23 @@
 const express = require('express');
 const { sequelize } = require('./models');
-require('dotenv').config();
 const app = express();
+require('dotenv').config();
 const port = process.env.PORT || 3000;
 
 const cors = require('cors');
 app.use(cors({ origin: true, credentials: true }));
 
-// Test de la connexion à la base de données
+// TEST DATABASE CONNECTION
 sequelize.authenticate()
   .then(() => {
-    console.log('Connecté à la base de données MariaDB !');
-    // Synchroniser les modèles avec la base de données
-    return sequelize.sync({ force: false }); // Ceci synchronisera tous les modèles avec la base de données
+    console.log('Connected to the database');
+    return sequelize.sync({ force: false });
   })
   .then(() => {
-    console.log('Tous les modèles synchronisés avec la base de données');
+    console.log('All models synchronized with the database');
   })
   .catch((err) => {
-    console.error("Impossible de se connecter à la base de données:", err);
+    console.error("Unable to connect to the database:", err);
   });
 
 app.use(express.urlencoded({ extended: true }));

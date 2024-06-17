@@ -12,12 +12,24 @@ router
     .route('/:id_task')
     .all(jwtMiddleware.verifyToken)
     .put(taskController.updateTask)
-    .delete(taskController.deleteTask);
-    
+    .delete(taskController.deleteTask)
+    .patch(taskController.updateTaskTitle);
 
 router
-    .route('/home/:id_home')
+    .route('/:id_task/status')
+    .all(jwtMiddleware.verifyToken)
+    .patch(taskController.updateTaskStatus);
+
+router
+    .route('/homes/:id_home')
     .all(jwtMiddleware.verifyToken)
     .get(taskController.getHomeTasks);
+
+router
+    .route('/rooms/:id_room')
+    .all(jwtMiddleware.verifyToken)
+    .get(taskController.getRoomTasks);
+
+
 
 module.exports = router;

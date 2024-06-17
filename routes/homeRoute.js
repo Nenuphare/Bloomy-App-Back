@@ -13,9 +13,19 @@ router
 router
     .route('/:id_home')
     .all(jwtMiddleware.verifyToken)
+    .get(homeController.getAHome)
     .put(homeController.updateAHome)
-    .post(homeController.exitAHome)
     .delete(homeController.deleteAHome)
+
+router
+    .route('/:id_home/exit')
+    .all(jwtMiddleware.verifyToken)
+    .delete(homeController.exitAHome)
+    
+router
+    .route('/:id_home/members')
+    .all(jwtMiddleware.verifyToken)
+    .get(homeController.getHomeUsers)
 
 router
     .route('/join/:share_code')

@@ -16,6 +16,7 @@ router
 
 router
     .route('/:id_room')
+    .all(jwtMiddleware.verifyToken)
     .put(roomController.updateRoom)
     .delete(roomController.deleteRoom);
 

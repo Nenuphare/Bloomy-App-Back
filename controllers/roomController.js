@@ -1,4 +1,5 @@
 const { Home, Room } = require('../models/index');
+const { checkUserHome } = require('../policy/checkUserHome');
 
 
 /*
@@ -8,6 +9,10 @@ const { Home, Room } = require('../models/index');
 exports.createRoom = async (req, res) => {
     try {
         const { id_home, name } = req.body;
+
+        // Check if user is in home
+        if (!checkUserHome(req.user.id_user, id_home)) 
+            return res.status(403).json({ message: "You don't have permission to create a room here" });
         
         //check if id home or name is empty
         if(!id_home || !name) return res.status(400).json({message: "id_home or room name cannot be empty"})
@@ -34,6 +39,10 @@ exports.getAllRoomsFromHome = async (req, res) => {
     try {
         const { id_home } = req.params;
 
+        // Check if user is in home
+        if (!checkUserHome(req.user.id_user, id_home)) 
+            return res.status(403).json({ message: "You don't have permission to get rooms of this home" });
+
         // Check if home exsit
         const home = await Home.findByPk(id_home);
         if (!home) return res.status(404).json({ error: 'Home not found' });
@@ -41,10 +50,6 @@ exports.getAllRoomsFromHome = async (req, res) => {
         // Récupération des pièces associées à la maison
         const rooms = await Room.findAll({
             where: { id_home },
-            // include: {
-            //     model: Home,
-            //     attributes: ['name']
-            // }
         });
 
         res.status(200).json(rooms);
@@ -63,16 +68,19 @@ exports.updateRoom = async (req, res) => {
         const { id_room } = req.params;
         const { name } = req.body;
 
+
+        // Check if room exist 
+        const room = await Room.findByPk(id_room);
+        if (!room) return res.status(404).json({ error: 'Room not found' });
+
+
+        // Check if user is in home
+        if (!checkUserHome(req.user.id_user, room.id_home)) 
+            return res.status(403).json({ message: "You don't have permission to update this room" });
+
         // Check if name is empty
         if(!name) return res.status(400).json({message: 'Room name cannot be empty'});
-
-        // Get room
-        const room = await Room.findByPk(id_room);
-
-        // Vérification si la pièce existe
-        if (!room) {
-            return res.status(404).json({ error: 'Room not found' });
-        }
+        
 
         // Vérification si le nouveau nom est identique à l'ancien
         if (room.name === name) {
@@ -105,6 +113,10 @@ exports.deleteRoom = async (req, res) => {
         // Check if room exist
         const room = await Room.findByPk(req.params.id_room);
         if (!room) return res.status(404).json({ error: 'Room not found' });
+
+        // Check if user is in home
+        if (!checkUserHome(req.user.id_user, room.id_home)) 
+            return res.status(403).json({ message: "You don't have permission to delete this room" });
 
         await room.destroy();
         res.status(200).json({message: "Room deleted"});

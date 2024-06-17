@@ -1,4 +1,5 @@
-const { Task, User, Room, Home, Type } = require('../models/index');
+const { Task, User, Room, Home, Type, UserHome } = require('../models/index');
+const { checkUserHome } = require('../policy/checkUserHome');
 
 
 /*
@@ -10,6 +11,10 @@ exports.createTask = async (req, res) => {
         // Check if user exist
         const user = await User.findByPk(req.user.id_user);
         if (!user) return res.status(404).json({ message: 'User not found' });
+        
+        // Check if user is in home
+        if (!checkUserHome(req.user.id_user, req.body.id_home)) 
+            return res.status(403).json({ message: "You don't have permission to create a task in this home" });
 
         const { title, deadline, id_type, id_home, id_room, id_user, recurrence } = req.body;
         //check if content is not empty
@@ -41,17 +46,17 @@ exports.createTask = async (req, res) => {
  * Get a task by id
  */
 
-exports.getTaskById = async (req, res) => {
-    try {
-        const task = await Task.findByPk(req.params.taskId);
-        if (!task) {
-            return res.status(404).json({message: "Task not found"});
-        }
-        res.status(200).json(task);
-    } catch (error) {
-        res.status(500).json({message: "Error retrieving task", error: error.message});
-    }
-}
+// exports.getTaskById = async (req, res) => {
+//     try {
+//         const task = await Task.findByPk(req.params.taskId);
+//         if (!task) {
+//             return res.status(404).json({message: "Task not found"});
+//         }
+//         res.status(200).json(task);
+//     } catch (error) {
+//         res.status(500).json({message: "Error retrieving task", error: error.message});
+//     }
+// }
 
 /*
  * Get all home tasks
@@ -62,6 +67,10 @@ exports.getHomeTasks = async (req, res) => {
         // Check if home exist
         const home = await Home.findByPk(req.params.id_home);
         if (!home) return res.status(404).json({ message: "This home doesn't exist" });
+
+        // Check if user is in home
+        if (!checkUserHome(req.user.id_user, req.params.id_home)) 
+            return res.status(403).json({ message: "You don't have permission to get a task of this home" });
         
         // Get all tasks associated with tis home
         const homeTasks = await Task.findAll({
@@ -84,10 +93,15 @@ exports.getHomeTasks = async (req, res) => {
 
 exports.getRoomTasks = async (req, res) => {
     try {
+        
         // Check if home exist
         const room = await Room.findByPk(req.params.id_room);
         if (!room) return res.status(404).json({ message: "This room doesn't exist" });
         
+        // Check if user is in home
+        if (!checkUserHome(req.user.id_user, room.id_home)) 
+            return res.status(403).json({ message: "You don't have permission to get these tasks" });
+
         // Get all tasks associated with this rooms
         const roomTasks = await Task.findAll({
             where: { 
@@ -135,6 +149,10 @@ exports.updateTaskStatus = async (req, res) => {
         const task = await Task.findByPk(req.params.id_task);
         if (!task) return res.status(404).json({ message: "Task not found" });
 
+        // Check if user is in home
+        if (!checkUserHome(req.user.id_user, task.id_home)) 
+            return res.status(403).json({ message: "You don't have permission to update this task" });
+
         const { finished } = req.body;
         if (typeof finished !== 'boolean') return res.status(400).json({ message: 'Invalid completed status' });
 
@@ -169,8 +187,11 @@ exports.updateTaskTitle = async (req, res) => {
         const task = await Task.findByPk(req.params.id_task);
         if (!task) return res.status(404).json({ message: "Task not found" });
 
+        // Check if user is in home
+        if (!checkUserHome(req.user.id_user, task.id_home)) 
+            return res.status(403).json({ message: "You don't have permission to update this title" });
+
         const { title } = req.body;
-        console.log('title', title);
         if (!title) return res.status(400).json({ message: 'Title cannot be empty' });
 
         task.title = title;
@@ -192,6 +213,10 @@ exports.deleteTask = async (req, res) => {
         // Check if task exist
         const task = await Task.findByPk(req.params.id_task);
         if (!task) return res.status(404).json({message: "Task not found"});
+
+        // Check if user is in home
+        if (!checkUserHome(req.user.id_user, task.id_home)) 
+            return res.status(403).json({ message: "You don't have permission to delete this task" });
 
         await task.destroy();
 

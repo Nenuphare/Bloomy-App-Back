@@ -54,6 +54,10 @@ exports.updateAHome = async(req, res) => {
         const home = await Home.findByPk(req.params.id_home);
         if (!home) return res.status(404).json({ message: "This home doesn't exist" });
         
+        // Check if the user is associated with the home
+        const userHome = await UserHome.findOne({ where: { id_user: user.id_user, id_home: home.id_home } });
+        if (!userHome) return res.status(403).json({ message: 'User is not associated with this home' });
+
         // Update the home
         const { name } = req.body;
         if(!name) return res.status(400).json({ message: "Home name cannot be empty" });
@@ -79,7 +83,11 @@ exports.getAHome = async (req, res) => {
 
         const home = await Home.findByPk(req.params.id_home);
         if (!home) return res.status(404).json({ message: 'Home not found' });
-
+        
+        // Check if the user is associated with the home
+        const userHome = await UserHome.findOne({ where: { id_user: user.id_user, id_home: home.id_home } });
+        if (!userHome) return res.status(403).json({ message: 'User is not associated with this home' });
+        
         res.status(200).json(home);
     } catch (error) {
         res.status(500).json({ message: 'Error processing data', error: error.message });
@@ -101,10 +109,10 @@ exports.deleteAHome = async(req, res) =>{
         const home = await Home.findByPk(req.params.id_home);
         if (!home) return res.status(404).json({ message: "This home doesn't exist" });
 
-        // Check if the user is in the home
-        const userHome = await UserHome.findOne({ where: { id_home: req.params.id_home, id_user: req.user.id_user } });
-        if (!userHome) return res.status(403).json({ message: "You don't have permission to delete this home" });
-
+        // Check if the user is associated with the home
+        const userHome = await UserHome.findOne({ where: { id_user: user.id_user, id_home: home.id_home } });
+        if (!userHome) return res.status(403).json({ message: 'User is not associated with this home' });
+        
         // Delete UserHome relations
         await UserHome.destroy({ where: { id_home: req.params.id_home } });
         // Delete the home

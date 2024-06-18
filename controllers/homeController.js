@@ -15,25 +15,27 @@ exports.createAHome = async (req, res) => {
         const { name } = req.body;
 
         if(!name) return res.status(400).json({message: "Home name cannot be empty"});
+        if(name.length < 30){
+            // Generate a unique share code for the home
+            const share_code = generateShareCode();
+            if(!share_code) return res.status(500).json({message: "Share code generation failed"});
 
-        // Generate a unique share code for the home
-        const share_code = generateShareCode();
-        if(!share_code) return res.status(500).json({message: "Share code generation failed"});
+            // Create the new home
+            const newHome = await Home.create({
+                name,
+                share_code
+            });
 
-        // Create the new home
-        const newHome = await Home.create({
-            name,
-            share_code
-        });
+            // Add the relation between user and home
+            await UserHome.create({
+                id_home: newHome.id_home,
+                id_user: user.id_user,
+            });
 
-        // Add the relation between user and home
-        await UserHome.create({
-            id_home: newHome.id_home,
-            id_user: user.id_user,
-        });
-
-        res.status(201).json({ message: 'Home successfully added', id_home: newHome.id_home });
-
+            res.status(201).json({ message: 'Home successfully added', id_home: newHome.id_home });
+        }else{
+            return res.status(400).json({message: "Home name cannot be wider than 30 characters"});
+        }
     } catch (error) {
         res.status(500).json({ message: 'Error processing data', error: error.message });
     }

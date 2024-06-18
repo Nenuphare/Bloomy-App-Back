@@ -23,7 +23,6 @@ sequelize.authenticate()
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); 
 
-
 // ROUTES CONFIGURATIONS
 const userRoute = require('./routes/userRoute'); 
 const homeRoute = require('./routes/homeRoute'); 
@@ -39,6 +38,8 @@ app.use('/tasks', taskRoute);
 app.use('/types', typeRoute);
 app.use('/subscribe', subscriberRoute);
 
+// SWAGGER CONFIGURATION
+const swaggerConfig = require('./swagger')(app);
 
 // SERVER STARTING
 app.listen(port, () => {

@@ -64,6 +64,7 @@ exports.registerAUser = async (req, res) => {
         const newUser = await User.create(req.body);
 
         res.status(201).json({ message: `User n°${newUser.id_user} created: mail: ${newUser.email}` });
+        //res.status(201).json({message: 'ok'});
     } catch (error) {
         res.status(500).json({ message: 'Error processing data', error: error.message });
     }

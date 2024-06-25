@@ -41,6 +41,8 @@ app.use('/subscribe', subscriberRoute);
 
 
 // SERVER STARTING
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`L'application écoute sur le port ${port}`);
 });
+
+module.exports = server;

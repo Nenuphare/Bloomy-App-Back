@@ -10,7 +10,7 @@ beforeAll(async () => {
     await sequelize.authenticate();
     // test user
     await User.create({
-      email: "testo@test.fr",
+      email: "testoo@test.fr",
       password: "Momomoooo123456",
       firstname: "Farid",
       lastname: "Tesou",
@@ -27,7 +27,7 @@ afterAll(async () => {
     await UserHome.destroy({ where: { id_home: homeId } });
     await Room.destroy({ where: { id_home: homeId } });
     await Home.destroy({ where: { id_home: homeId } });
-    await User.destroy({ where: { email: "testo@test.fr" } });
+    await User.destroy({ where: { email: "testoo@test.fr" } });
     await sequelize.close();
   } catch (error) {
     console.error("Error in afterAll cleanup:", error);
@@ -41,7 +41,7 @@ describe("ROOM routes", () => {
   beforeAll(async () => {
     // Test user connexion
     const res = await request(server).post("/users/login").send({
-      email: "testo@test.fr",
+      email: "testoo@test.fr",
       password: "Momomoooo123456",
     });
 
